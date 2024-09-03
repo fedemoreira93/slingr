@@ -4,13 +4,9 @@ Implement a full-stack shopping list using the provided mocks. The shopping list
 
 ## Requirements
 
-Use as much of the recommended stack as you are comfortable. There is no time limit to this
-assignment, however, please commit regularly if using version control. The code should be able
-to compile and serve the finished application. The finished application should be visually
-identical to the mocks.
+Use as much of the recommended stack as you are comfortable. There is no time limit to this assignment, however, please commit regularly if using version control. The code should be able to compile and serve the finished application. The finished application should be visually identical to the mocks.
 
-You have creative freedom for any design decisions not included in the mocks or explained in
-this document. Any decisions you make will be assessed during your challenge review.
+You have creative freedom for any design decisions not included in the mocks or explained in this document. Any decisions you make will be assessed during your challenge review.
 
 ## Mocks
 
