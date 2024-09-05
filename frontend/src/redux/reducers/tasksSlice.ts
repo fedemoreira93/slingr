@@ -51,6 +51,9 @@ const tasksSlice = createSlice({
         if (action.payload.description) {
           task.description = action.payload.description;
         }
+        if (action.payload.quantity) {
+          task.quantity = action.payload.quantity;
+        }
       }
 
       state.loading = false;

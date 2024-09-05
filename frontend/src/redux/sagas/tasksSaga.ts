@@ -23,6 +23,7 @@ function* getTasksSaga() {
               id: 1,
               name: "Task 1",
               description: "Description 1",
+              quantity: 1,
               deleted: false,
             },
             { id: 2, name: "Task 2", deleted: false },

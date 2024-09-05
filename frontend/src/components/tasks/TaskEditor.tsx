@@ -6,7 +6,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { TaskEditorProps } from "./Tasks.types";
+import {
+  TaskEditorProps,
+  TaskFormInputs,
+  TaskQuantityOption,
+} from "./Tasks.types";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import quantityOptions from "./QuantityOptions";
+import { useEffect } from "react";
 
 const modalStyle = {
   position: "absolute",
@@ -69,13 +76,28 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
   handleClose,
   task,
 }) => {
-  if (task?.id) {
-    return (
-      <div>
-        <span>{task.name}</span>
-      </div>
-    );
-  }
+  const { control, handleSubmit, reset } = useForm<TaskFormInputs>({
+    defaultValues: {
+      taskName: "",
+      taskDescription: "",
+      taskQuantity: null,
+    },
+  });
+
+  useEffect(() => {
+    if (task) {
+      reset({
+        taskName: task.name || "",
+        taskDescription: task.description || "",
+        taskQuantity: task.quantity || null,
+      });
+    }
+  }, [task, reset]);
+
+  const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
+    console.log(data);
+    handleClose();
+  };
 
   return (
     <Modal
@@ -83,87 +105,143 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      style={{ minWidth: "300px" }}
     >
       <Box sx={modalStyle}>
         <div
           style={{ display: "flex", flexDirection: "column", height: "100%" }}
         >
-          <Box sx={headerStyle}>
-            <Typography
-              id="modal-modal-title"
-              variant="h5"
-              component="h2"
-              sx={headerTitleStyle}
-            >
-              SHOPPING LIST
-            </Typography>
-            <div
-              className="material-icons"
-              style={{ color: "#555F7C", cursor: "pointer" }}
-            >
-              last_page
-            </div>
-          </Box>
-          <Box sx={contentStyle}>
-            <div style={subtitle1Style}>Add an item</div>
-            <div style={subtitle2Style}>Add your new item below</div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                paddingTop: "10px",
-                gap: "20px",
-              }}
-            >
-              <TextField
-                id="task-name"
-                label="Item Name"
-                variant="outlined"
-                style={{ borderRadius: "4px" }}
-              />
-              <TextField
-                id="task-description"
-                label="Description"
-                variant="outlined"
-                style={{ borderRadius: "4px" }}
-                multiline
-                rows={5}
-                helperText={`0/100`}
-              />
-              <Autocomplete
-                disablePortal
-                options={[
-                  { label: "1", quantity: 1 },
-                  { label: "2", quantity: 2 },
-                  { label: "3", quantity: 3 },
-                ]}
-                renderInput={(params) => (
-                  <TextField {...params} label="How many?" />
-                )}
-                style={{ borderRadius: "4px" }}
-              />
-            </div>
-          </Box>
-          <Box sx={footerStyle}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "20px",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                style={{ textTransform: "none", color: "#2A323C" }}
-                onClick={handleClose}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={headerStyle}>
+              <Typography
+                id="modal-modal-title"
+                variant="h5"
+                component="h2"
+                sx={headerTitleStyle}
               >
-                Cancel
-              </Button>
-              <Button variant="contained" style={{ textTransform: "none" }}>
-                Add task
-              </Button>
-            </div>
-          </Box>
+                SHOPPING LIST
+              </Typography>
+              <div
+                className="material-icons"
+                style={{ color: "#555F7C", cursor: "pointer" }}
+              >
+                last_page
+              </div>
+            </Box>
+            <Box sx={contentStyle}>
+              <div style={subtitle1Style}>Add an item</div>
+              <div style={subtitle2Style}>Add your new item below</div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  paddingTop: "10px",
+                  gap: "20px",
+                }}
+              >
+                <Controller
+                  name="taskName"
+                  control={control}
+                  rules={{ required: "Task name is required" }}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      id="task-name"
+                      label="Item Name"
+                      variant="outlined"
+                      error={!!fieldState.error}
+                      helperText={
+                        fieldState.error ? fieldState.error.message : ""
+                      }
+                      style={{ borderRadius: "4px" }}
+                    />
+                  )}
+                />
+                <Controller
+                  name="taskDescription"
+                  control={control}
+                  rules={{
+                    maxLength: {
+                      value: 100,
+                      message: "Description cannot exceed 100 characters",
+                    },
+                  }}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      id="task-description"
+                      label="Description"
+                      variant="outlined"
+                      style={{ borderRadius: "4px" }}
+                      multiline
+                      rows={5}
+                      error={!!fieldState.error}
+                      helperText={`${field.value.length}/100${
+                        fieldState.error ? ` | ${fieldState.error.message}` : ""
+                      }`}
+                    />
+                  )}
+                />
+                <Controller
+                  name="taskQuantity"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Autocomplete<TaskQuantityOption>
+                      disablePortal
+                      options={quantityOptions}
+                      getOptionLabel={(option) => option.label}
+                      value={
+                        quantityOptions.find(
+                          (option) => option.quantity === field.value
+                        ) || null
+                      }
+                      onChange={(_, newValue) =>
+                        field.onChange(newValue?.quantity || null)
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="How many?"
+                          error={!!fieldState.error}
+                          helperText={
+                            fieldState.error ? fieldState.error.message : ""
+                          }
+                        />
+                      )}
+                      style={{ borderRadius: "4px" }}
+                    />
+                  )}
+                />
+              </div>
+            </Box>
+            <Box sx={footerStyle}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "20px",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Button
+                  style={{ textTransform: "none", color: "#2A323C" }}
+                  onClick={() => {
+                    reset();
+                    handleClose();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  style={{ textTransform: "none" }}
+                >
+                  Add task
+                </Button>
+              </div>
+            </Box>
+          </form>
         </div>
       </Box>
     </Modal>

@@ -10,6 +10,7 @@ const StyledEmptyTasks = styled.div`
   align-items: center;
   gap: 20px;
   width: 40%;
+  min-width: 300px;
   height: 35%;
   padding: 20px;
   border: 1px solid #c6c6c6;
