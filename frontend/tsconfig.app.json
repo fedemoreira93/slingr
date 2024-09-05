@@ -22,8 +22,10 @@
     "baseUrl": "./",
     "paths": {
       "@reducers/*": ["src/redux/reducers/*"],
-      "@sagas/*": ["src/redux/sagas/*"]
+      "@sagas/*": ["src/redux/sagas/*"],
+      "@components/*": ["src/components/*"]
     }
+    // "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src"]
 }

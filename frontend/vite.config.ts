@@ -6,12 +6,13 @@ import { join } from "path";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 9090,
   },
   resolve: {
     alias: {
       "@reducers": join(__dirname, "src/redux/reducers"),
       "@sagas": join(__dirname, "src/redux/sagas"),
+      "@components": join(__dirname, "src/components"),
     },
   },
 });
