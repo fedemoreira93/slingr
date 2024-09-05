@@ -19,7 +19,12 @@ function* getTasksSaga() {
       return new Promise<Task[]>((resolve) => {
         setTimeout(() => {
           resolve([
-            { id: 1, name: "Task 1", deleted: false },
+            {
+              id: 1,
+              name: "Task 1",
+              description: "Description 1",
+              deleted: false,
+            },
             { id: 2, name: "Task 2", deleted: false },
           ]);
         }, 500);

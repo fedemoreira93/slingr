@@ -44,8 +44,13 @@ const tasksSlice = createSlice({
     },
     editTask: (state, action: PayloadAction<TaskEdit>) => {
       const task = state.tasks.find((task) => task.id === action.payload.id);
-      if (task && action.payload.name) {
-        task.name = action.payload.name;
+      if (task) {
+        if (action.payload.name) {
+          task.name = action.payload.name;
+        }
+        if (action.payload.description) {
+          task.description = action.payload.description;
+        }
       }
 
       state.loading = false;
