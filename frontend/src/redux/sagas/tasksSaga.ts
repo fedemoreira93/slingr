@@ -6,8 +6,31 @@ import {
   editTask,
   fetchTask,
   fetchTaskError,
+  fetchTasks,
+  getTasks,
   removeTask,
 } from "@reducers/tasksSlice";
+
+function* getTasksSaga() {
+  try {
+    yield put(fetchTask());
+
+    const tasks: Task[] = yield call(() => {
+      return new Promise<Task[]>((resolve) => {
+        setTimeout(() => {
+          resolve([
+            { id: 1, name: "Task 1", deleted: false },
+            { id: 2, name: "Task 2", deleted: false },
+          ]);
+        }, 500);
+      });
+    });
+
+    yield put(getTasks(tasks));
+  } catch (error) {
+    yield put(fetchTaskError(handleError(error)));
+  }
+}
 
 function* addTaskSaga(action: PayloadAction<Task>) {
   try {
@@ -69,6 +92,7 @@ const handleError = (error: unknown): string => {
 };
 
 export function* watchTaskActions() {
+  yield takeLatest(fetchTasks.type, getTasksSaga);
   yield takeLatest(addTask.type, addTaskSaga);
   yield takeLatest(removeTask.type, removeTaskSaga);
   yield takeLatest(editTask.type, editTaskSaga);

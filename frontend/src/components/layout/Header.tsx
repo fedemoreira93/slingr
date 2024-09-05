@@ -1,4 +1,6 @@
+import { fetchTasks } from "@reducers/tasksSlice";
 import React from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
 const StyledHeader = styled.div`
@@ -14,14 +16,19 @@ const StyledHeader = styled.div`
   text-align: center;
 `;
 
-interface HeaderData {
-  title: string;
-}
+const Header: React.FC = () => {
+  const dispatch = useDispatch();
 
-const Header: React.FC<HeaderData> = ({ title }) => {
   return (
     <StyledHeader>
-      <div style={{ padding: "30px", cursor: "default" }}>{title}</div>
+      <div
+        style={{ padding: "30px", cursor: "pointer" }}
+        onClick={() => {
+          dispatch(fetchTasks());
+        }}
+      >
+        SHOPPING LIST
+      </div>
     </StyledHeader>
   );
 };

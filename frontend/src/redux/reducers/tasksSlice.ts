@@ -15,9 +15,17 @@ const tasksSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
+    fetchTasks: (state) => {
+      state.loading = true;
+    },
     fetchTaskError: (state, action: PayloadAction<string>) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    getTasks: (state, action: PayloadAction<Task[]>) => {
+      state.tasks = action.payload;
+      state.loading = false;
+      state.error = null;
     },
     addTask: (state, action: PayloadAction<Task>) => {
       state.tasks = [...state.tasks, action.payload];
@@ -39,11 +47,21 @@ const tasksSlice = createSlice({
       if (task && action.payload.name) {
         task.name = action.payload.name;
       }
+
+      state.loading = false;
+      state.error = null;
     },
   },
 });
 
-export const { fetchTask, fetchTaskError, addTask, removeTask, editTask } =
-  tasksSlice.actions;
+export const {
+  fetchTask,
+  fetchTasks,
+  fetchTaskError,
+  getTasks,
+  addTask,
+  removeTask,
+  editTask,
+} = tasksSlice.actions;
 
 export default tasksSlice.reducer;

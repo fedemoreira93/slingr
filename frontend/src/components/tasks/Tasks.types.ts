@@ -18,3 +18,9 @@ export interface TasksState {
   loading: boolean;
   error: string | null;
 }
+
+export interface TaskEditorProps {
+  openModal: boolean;
+  handleClose: () => void;
+  task?: Task;
+}

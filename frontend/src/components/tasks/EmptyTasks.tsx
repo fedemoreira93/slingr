@@ -15,7 +15,6 @@ const StyledEmptyTasks = styled.div`
   border: 1px solid #c6c6c6;
   border-radius: 5px;
   box-sizing: border-box;
-  font-family: Nunito, sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;
