@@ -15,6 +15,7 @@ import TasksList from "./TasksList";
 import TaskEditor from "./TaskEditor";
 import { Task } from "./Tasks.types";
 import useNotifications from "@hooks/useNotifications";
+import { FETCH_TASKS_REQUEST } from "@actionTypes/tasksTypes";
 
 const StyledTasksContainer = styled.div`
   display: flex;
@@ -43,7 +44,7 @@ const TasksContainer: React.FC = () => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   useEffect(() => {
-    dispatch({ type: "FETCH_TASKS_REQUEST" });
+    dispatch({ type: FETCH_TASKS_REQUEST });
   }, [dispatch]);
 
   useEffect(() => {

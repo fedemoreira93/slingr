@@ -23,6 +23,7 @@
     "paths": {
       "@reducers/*": ["src/redux/reducers/*"],
       "@sagas/*": ["src/redux/sagas/*"],
+      "@actionTypes/*": ["src/redux/actionTypes/*"],
       "@components/*": ["src/components/*"],
       "@hooks/*": ["src/hooks/*"]
     }

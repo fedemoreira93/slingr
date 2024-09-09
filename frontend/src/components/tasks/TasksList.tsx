@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { REMOVE_TASK_REQUEST } from "@actionTypes/tasksTypes";
 
 const StyledTasks = styled.div`
   display: flex;
@@ -49,11 +50,19 @@ const TasksList: React.FC<TasksProps> = ({ tasks, toggleShowPopup }) => {
     useState<boolean>(false);
   const [deleteTask, setDeleteTask] = useState<number | null>(null);
 
-  const handleDeleteTask = (id: number): void => {
+  const handleDeleteTask = (id: number | undefined): void => {
+    if (!id) {
+      return;
+    }
+
     setDeleteTask(id);
   };
 
-  const handleEditTask = (id: number): void => {
+  const handleEditTask = (id: number | undefined): void => {
+    if (!id) {
+      return;
+    }
+
     const findedTask = tasks?.find((task) => task.id === id);
 
     if (findedTask) {
@@ -61,7 +70,11 @@ const TasksList: React.FC<TasksProps> = ({ tasks, toggleShowPopup }) => {
     }
   };
 
-  const handleSelectTask = (id: number): void => {
+  const handleSelectTask = (id: number | undefined): void => {
+    if (!id) {
+      return;
+    }
+
     if (selected.includes(id)) {
       setSelected(selected.filter((taskId) => taskId !== id));
     } else {
@@ -69,8 +82,8 @@ const TasksList: React.FC<TasksProps> = ({ tasks, toggleShowPopup }) => {
     }
   };
 
-  const isSelected = (id: number) => {
-    return selected.includes(id);
+  const isSelected = (id: number | undefined) => {
+    return id ? selected.includes(id) : false;
   };
 
   const isPurchased = (task: Task) => {
@@ -199,7 +212,7 @@ const TasksList: React.FC<TasksProps> = ({ tasks, toggleShowPopup }) => {
           <Button
             onClick={() => {
               if (deleteTask) {
-                dispatch({ type: "REMOVE_TASK_REQUEST", payload: deleteTask });
+                dispatch({ type: REMOVE_TASK_REQUEST, payload: deleteTask });
                 setOpenDeleteTaskPopup(false);
               }
             }}

@@ -4,7 +4,7 @@ export interface TasksProps {
 }
 
 export interface Task {
-  id?: number;
+  id: number | undefined;
   name: string;
   description: string;
   quantity: number;

@@ -10,38 +10,68 @@ import {
   startLoading,
   stopLoading,
 } from "@reducers/tasksSlice";
+import {
+  ADD_TASK_REQUEST,
+  EDIT_TASK_REQUEST,
+  FETCH_TASKS_REQUEST,
+  REMOVE_TASK_REQUEST,
+} from "@actionTypes/tasksTypes";
+
+const fetchTasksAPI = (): Promise<Task[]> => {
+  return new Promise<Task[]>((resolve) => {
+    setTimeout(() => {
+      resolve([
+        /*
+        {
+          id: 1,
+          name: "Task 1",
+          description: "Description 1",
+          quantity: 1,
+          purchased: false,
+          deleted: false,
+        },
+        {
+          id: 2,
+          name: "Task 2",
+          description: "Description 2",
+          quantity: 0,
+          purchased: false,
+          deleted: false,
+        },*/
+      ]);
+    }, 500);
+  });
+};
+
+const addTaskAPI = (task: Task): Promise<Task> => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 500);
+    task.id = 3;
+  });
+};
+
+const removeTaskAPI = (id: number): Promise<void> => {
+  console.log(id);
+
+  return new Promise((resolve) => {
+    setTimeout(resolve, 500);
+  });
+};
+
+const editTaskAPI = (task: TaskEdit): Promise<Task> => {
+  console.log(task);
+  return new Promise((resolve) => {
+    setTimeout(resolve, 500);
+  });
+};
 
 function* getTasksSaga() {
   try {
     yield put(startLoading());
 
-    const tasks: Task[] = yield call(() => {
-      return new Promise<Task[]>((resolve) => {
-        setTimeout(() => {
-          resolve([
-            /*
-            {
-              id: 1,
-              name: "Task 1",
-              description: "Description 1",
-              quantity: 1,
-              purchased: false,
-              deleted: false,
-            },
-            {
-              id: 2,
-              name: "Task 2",
-              description: "Description 2",
-              quantity: 0,
-              purchased: false,
-              deleted: false,
-            },*/
-          ]);
-        }, 500);
-      });
-    });
+    const tasks: Task[] = yield call(fetchTasksAPI);
 
-    yield put(setTasks(tasks)); // Actualiza las tareas sin despachar `getTasks`
+    yield put(setTasks(tasks));
     yield put(stopLoading());
   } catch (error) {
     yield put(fetchTaskError(handleError(error)));
@@ -52,14 +82,9 @@ function* addTaskSaga(action: PayloadAction<Task>) {
   try {
     yield put(startLoading());
 
-    yield call(() => {
-      return new Promise((resolve) => {
-        setTimeout(resolve, 500);
-        action.payload.id = 3;
-      });
-    });
+    const newTask: Task = yield call(addTaskAPI, action.payload);
 
-    yield put(addTask(action.payload));
+    yield put(addTask(newTask));
     yield put(stopLoading());
   } catch (error) {
     yield put(fetchTaskError(handleError(error)));
@@ -70,7 +95,7 @@ function* removeTaskSaga(action: PayloadAction<number>) {
   try {
     yield put(startLoading());
 
-    yield call(() => new Promise((resolve) => setTimeout(resolve, 500)));
+    yield call(removeTaskAPI, action.payload);
 
     yield put(removeTask(action.payload));
 
@@ -84,11 +109,7 @@ function* editTaskSaga(action: PayloadAction<TaskEdit>) {
   try {
     yield put(startLoading());
 
-    yield call(() => {
-      return new Promise((resolve) => {
-        setTimeout(resolve, 500);
-      });
-    });
+    yield call(editTaskAPI, action.payload);
 
     yield put(editTask(action.payload));
     yield put(stopLoading());
@@ -105,14 +126,16 @@ const handleError = (error: unknown): string => {
     message = error;
   }
 
+  console.error(message, error);
+
   return message;
 };
 
 export function* watchTaskActions() {
-  yield takeLatest("FETCH_TASKS_REQUEST", getTasksSaga);
-  yield takeLatest("ADD_TASK_REQUEST", addTaskSaga);
-  yield takeLatest("REMOVE_TASK_REQUEST", removeTaskSaga);
-  yield takeLatest("EDIT_TASK_REQUEST", editTaskSaga);
+  yield takeLatest(FETCH_TASKS_REQUEST, getTasksSaga);
+  yield takeLatest(ADD_TASK_REQUEST, addTaskSaga);
+  yield takeLatest(REMOVE_TASK_REQUEST, removeTaskSaga);
+  yield takeLatest(EDIT_TASK_REQUEST, editTaskSaga);
 }
 
 export default watchTaskActions;

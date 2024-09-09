@@ -12,6 +12,7 @@ export default defineConfig({
     alias: {
       "@reducers": join(__dirname, "src/redux/reducers"),
       "@sagas": join(__dirname, "src/redux/sagas"),
+      "@actionTypes": join(__dirname, "src/redux/actionTypes"),
       "@components": join(__dirname, "src/components"),
       "@hooks": join(__dirname, "src/hooks"),
     },

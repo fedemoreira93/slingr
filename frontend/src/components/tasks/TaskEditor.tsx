@@ -18,6 +18,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import quantityOptions from "./QuantityOptions";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { ADD_TASK_REQUEST, EDIT_TASK_REQUEST } from "@actionTypes/tasksTypes";
 
 const modalStyle = {
   position: "absolute",
@@ -110,7 +111,7 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
       purchased: data.taskPurchased,
     };
     dispatch({
-      type: task?.id ? "EDIT_TASK_REQUEST" : "ADD_TASK_REQUEST",
+      type: task?.id ? EDIT_TASK_REQUEST : ADD_TASK_REQUEST,
       payload: newTask,
     });
     toggleShowPopup(null);
