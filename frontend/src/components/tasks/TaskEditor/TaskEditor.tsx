@@ -46,7 +46,7 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
     const newTask: Task = {
-      id: 0,
+      id: task?.id || 0,
       name: data.taskName,
       description: data.taskDescription,
       quantity: data.taskQuantity,

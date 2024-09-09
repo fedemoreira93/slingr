@@ -17,64 +17,51 @@ import {
   REMOVE_TASK_REQUEST,
 } from "@actionTypes/tasksTypes";
 
-const fetchTasksAPI = (): Promise<Task[]> => {
-  return new Promise<Task[]>((resolve) => {
-    setTimeout(() => {
-      resolve([
-        /*
-        {
-          id: 1,
-          name: "Task 1",
-          description: "Description 1",
-          quantity: 1,
-          purchased: false,
-          deleted: false,
-        },
-        {
-          id: 2,
-          name: "Task 2",
-          description: "Description 2",
-          quantity: 0,
-          purchased: false,
-          deleted: false,
-        },*/
-      ]);
-    }, 500);
-  });
+const API_URL = "http://localhost:8080/tasks";
+
+const fetchTasksAPI = async (): Promise<Task[]> => {
+  const response = await fetch(API_URL);
+  if (!response.ok) {
+    throw new Error("Failed to fetch tasks");
+  }
+  return await response.json();
 };
 
-const addTaskAPI = (task: Task): Promise<Task> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      task.id = 3;
-      resolve(task);
-    }, 500);
+const addTaskAPI = async (task: Task): Promise<Task> => {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
   });
+  if (!response.ok) {
+    throw new Error("Failed to add task");
+  }
+  return await response.json();
 };
 
-const removeTaskAPI = (id: number): Promise<void> => {
-  console.log(id);
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 500);
+const removeTaskAPI = async (id: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
   });
+  if (!response.ok) {
+    throw new Error("Failed to remove task");
+  }
 };
 
-const editTaskAPI = (task: TaskEdit): Promise<Task> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const editedTask: Task = {
-        id: 3,
-        name: task.name || "no-fetch-name",
-        description: task.name || "no-fetch-description",
-        quantity: task.quantity || 0,
-        purchased: task.purchased || false,
-      };
-      resolve(editedTask);
-    }, 500);
+const editTaskAPI = async (task: TaskEdit): Promise<Task> => {
+  const response = await fetch(`${API_URL}/${task.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
   });
+  if (!response.ok) {
+    throw new Error("Failed to edit task");
+  }
+  return await response.json();
 };
 
 function* getTasksSaga() {
