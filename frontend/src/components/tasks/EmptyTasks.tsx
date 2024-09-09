@@ -23,18 +23,22 @@ const StyledEmptyTasks = styled.div`
   color: #87898c;
 `;
 
-const EmptyTasks: React.FC<TasksProps> = ({ onClick }) => {
+const EmptyTasks: React.FC<TasksProps> = ({ toggleShowPopup }) => {
   return (
-    <StyledEmptyTasks>
-      <span>Your shopping list is empty :(</span>
-      <Button
-        variant="contained"
-        style={{ textTransform: "none" }}
-        onClick={onClick}
-      >
-        Add your first item
-      </Button>
-    </StyledEmptyTasks>
+    <>
+      <StyledEmptyTasks>
+        <span>Your shopping list is empty :(</span>
+        <Button
+          variant="contained"
+          style={{ textTransform: "none" }}
+          onClick={() => {
+            toggleShowPopup(null);
+          }}
+        >
+          Add your first item
+        </Button>
+      </StyledEmptyTasks>
+    </>
   );
 };
 

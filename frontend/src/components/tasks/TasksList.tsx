@@ -1,67 +1,216 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import EmptyTasks from "./EmptyTasks";
-import TaskEditor from "./TaskEditor";
-import { Backdrop, Box, CircularProgress } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "src/redux/store";
-import { fetchTasks } from "@reducers/tasksSlice";
+import { Task, TasksProps } from "./Tasks.types";
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { useDispatch } from "react-redux";
 
-const StyledTasksContainer = styled.div`
+const StyledTasks = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  flex-direction: column;
+  width: 80%;
+  min-width: 300px;
   height: 100%;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 24px;
 `;
 
-const TasksList: React.FC = () => {
+const StyledTask = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  box-sizing: border-box;
+`;
+
+const TaskTitle = styled.div`
+  font-size: 16px;
+  line-height: 20px;
+`;
+
+const TaskDescription = styled.div`
+  font-size: 14px;
+  line-height: 20px;
+  color: #7d7a7a;
+`;
+
+const TasksList: React.FC<TasksProps> = ({ tasks, toggleShowPopup }) => {
   const dispatch = useDispatch();
 
-  const { loading } = useSelector((state: RootState) => state.tasks);
+  const [selected, setSelected] = useState<number[]>([]);
+  const [openDeleteTaskPopup, setOpenDeleteTaskPopup] =
+    useState<boolean>(false);
+  const [deleteTask, setDeleteTask] = useState<number | null>(null);
 
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const handleDeleteTask = (id: number): void => {
+    setDeleteTask(id);
+  };
 
-  const handleShowTaskPopup = (): void => {
-    if (!openModal) {
-      setOpenModal(true);
+  const handleEditTask = (id: number): void => {
+    const findedTask = tasks?.find((task) => task.id === id);
+
+    if (findedTask) {
+      toggleShowPopup(findedTask);
     }
   };
 
-  useEffect(() => {
-    dispatch(fetchTasks());
-  }, [dispatch]);
+  const handleSelectTask = (id: number): void => {
+    if (selected.includes(id)) {
+      setSelected(selected.filter((taskId) => taskId !== id));
+    } else {
+      setSelected([...selected, id]);
+    }
+  };
+
+  const isSelected = (id: number) => {
+    return selected.includes(id);
+  };
+
+  const isPurchased = (task: Task) => {
+    return task.purchased;
+  };
 
   return (
-    <Box sx={{ position: "relative", height: "100%" }}>
-      {loading && (
-        <Backdrop
-          sx={{
-            background: "#FFFFFF",
-            color: "#4d81b7",
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
+    <StyledTasks>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          padding: "40px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
-          open={true}
         >
-          <CircularProgress color="inherit" size={80} thickness={2} />
-        </Backdrop>
-      )}
-      <StyledTasksContainer>
-        <EmptyTasks onClick={handleShowTaskPopup} />
-        <TaskEditor
-          openModal={openModal}
-          handleClose={() => {
-            setOpenModal(false);
-          }}
-          task={undefined}
-        />
-      </StyledTasksContainer>
-    </Box>
+          <span>Your Items</span>
+          <Button
+            variant="contained"
+            style={{ textTransform: "none" }}
+            onClick={() => {
+              toggleShowPopup(null);
+            }}
+          >
+            Add item
+          </Button>
+        </div>
+        {tasks?.map((task) => {
+          const selected = isSelected(task.id);
+          const purchased = isPurchased(task);
+
+          return (
+            <StyledTask
+              key={`task-${task.id}`}
+              style={{
+                border: !selected ? "0.5px solid #d5dfe9" : "unset",
+                background: selected ? "rgba(213, 223, 233, 0.17)" : "unset",
+              }}
+            >
+              <div style={{ display: "flex", padding: "20px 10px" }}>
+                <div style={{ paddingRight: "10px" }}>
+                  <Checkbox
+                    id={`task-${task.id}-selected`}
+                    checked={selected}
+                    onChange={() => {
+                      handleSelectTask(task.id);
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "5px",
+                    width: "100%",
+                    textDecoration: purchased ? "line-through" : "unset",
+                  }}
+                >
+                  <TaskTitle>{task.name}</TaskTitle>
+                  <TaskDescription>{task.description}</TaskDescription>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    gap: "20px",
+                    paddingRight: "20px",
+                  }}
+                >
+                  <div
+                    className="material-icons-outlined"
+                    style={{ color: "#555F7C", cursor: "pointer" }}
+                    onClick={() => {
+                      handleEditTask(task.id);
+                    }}
+                  >
+                    edit
+                  </div>
+                  <div
+                    className="material-icons-outlined"
+                    style={{ color: "#555F7C", cursor: "pointer" }}
+                    onClick={() => {
+                      handleDeleteTask(task.id);
+                      setOpenDeleteTaskPopup(true);
+                    }}
+                  >
+                    delete
+                  </div>
+                </div>
+              </div>
+            </StyledTask>
+          );
+        })}
+      </div>
+      <Dialog
+        open={openDeleteTaskPopup}
+        onClose={() => {
+          setOpenDeleteTaskPopup(false);
+        }}
+      >
+        <DialogTitle>Delete Item?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this item? This can not be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setOpenDeleteTaskPopup(false);
+            }}
+            style={{ textTransform: "none", color: "#2A323C" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              if (deleteTask) {
+                dispatch({ type: "REMOVE_TASK_REQUEST", payload: deleteTask });
+                setOpenDeleteTaskPopup(false);
+              }
+            }}
+            variant="contained"
+            style={{ textTransform: "none" }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </StyledTasks>
   );
 };
 

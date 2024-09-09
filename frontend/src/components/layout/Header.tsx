@@ -1,4 +1,3 @@
-import { fetchTasks } from "@reducers/tasksSlice";
 import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -19,14 +18,13 @@ const StyledHeader = styled.div`
 const Header: React.FC = () => {
   const dispatch = useDispatch();
 
+  const handleClick = () => {
+    dispatch({ type: "FETCH_TASKS_REQUEST" });
+  };
+
   return (
     <StyledHeader>
-      <div
-        style={{ padding: "30px", cursor: "pointer" }}
-        onClick={() => {
-          dispatch(fetchTasks());
-        }}
-      >
+      <div style={{ padding: "30px", cursor: "pointer" }} onClick={handleClick}>
         SHOPPING LIST
       </div>
     </StyledHeader>

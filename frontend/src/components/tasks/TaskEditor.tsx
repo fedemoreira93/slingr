@@ -2,11 +2,14 @@ import {
   Autocomplete,
   Box,
   Button,
+  Checkbox,
+  FormControlLabel,
   Modal,
   TextField,
   Typography,
 } from "@mui/material";
 import {
+  Task,
   TaskEditorProps,
   TaskFormInputs,
   TaskQuantityOption,
@@ -14,6 +17,7 @@ import {
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import quantityOptions from "./QuantityOptions";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 const modalStyle = {
   position: "absolute",
@@ -52,6 +56,7 @@ const contentStyle = {
   padding: "20px 25px",
   fontWeight: 400,
   paddingBottom: "200px",
+  justifyContent: "left",
 };
 
 const subtitle1Style = {
@@ -73,36 +78,51 @@ const footerStyle = {
 
 const TaskEditor: React.FC<TaskEditorProps> = ({
   openModal,
-  handleClose,
+  toggleShowPopup,
   task,
 }) => {
+  const dispatch = useDispatch();
+
   const { control, handleSubmit, reset } = useForm<TaskFormInputs>({
     defaultValues: {
       taskName: "",
       taskDescription: "",
-      taskQuantity: null,
+      taskQuantity: 0,
+      taskPurchased: false,
     },
   });
 
   useEffect(() => {
-    if (task) {
-      reset({
-        taskName: task.name || "",
-        taskDescription: task.description || "",
-        taskQuantity: task.quantity || null,
-      });
-    }
+    reset({
+      taskName: task?.name || "",
+      taskDescription: task?.description || "",
+      taskQuantity: task?.quantity || 0,
+      taskPurchased: task?.purchased || false,
+    });
   }, [task, reset]);
 
   const onSubmit: SubmitHandler<TaskFormInputs> = (data) => {
-    console.log(data);
-    handleClose();
+    const newTask: Task = {
+      id: task?.id || undefined,
+      name: data.taskName,
+      description: data.taskDescription,
+      quantity: data.taskQuantity,
+      purchased: data.taskPurchased,
+      deleted: false,
+    };
+    dispatch({
+      type: task?.id ? "EDIT_TASK_REQUEST" : "ADD_TASK_REQUEST",
+      payload: newTask,
+    });
+    toggleShowPopup(null);
   };
 
   return (
     <Modal
       open={openModal}
-      onClose={handleClose}
+      onClose={() => {
+        toggleShowPopup(null);
+      }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       style={{ minWidth: "300px" }}
@@ -129,14 +149,18 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
               </div>
             </Box>
             <Box sx={contentStyle}>
-              <div style={subtitle1Style}>Add an item</div>
-              <div style={subtitle2Style}>Add your new item below</div>
+              <div style={subtitle1Style}>
+                {task ? `Edit an item` : `Add an item`}
+              </div>
+              <div style={subtitle2Style}>
+                {task ? `Edit your item below` : `Add your new item below`}
+              </div>
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   paddingTop: "10px",
-                  gap: "20px",
+                  gap: "15px",
                 }}
               >
                 <Controller
@@ -147,7 +171,7 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
                     <TextField
                       {...field}
                       id="task-name"
-                      label="Item Name"
+                      placeholder="Item Name"
                       variant="outlined"
                       error={!!fieldState.error}
                       helperText={
@@ -170,7 +194,7 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
                     <TextField
                       {...field}
                       id="task-description"
-                      label="Description"
+                      placeholder="Description"
                       variant="outlined"
                       style={{ borderRadius: "4px" }}
                       multiline
@@ -201,7 +225,7 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="How many?"
+                          placeholder="How many?"
                           error={!!fieldState.error}
                           helperText={
                             fieldState.error ? fieldState.error.message : ""
@@ -212,6 +236,33 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
                     />
                   )}
                 />
+                {task && (
+                  <Controller
+                    name="taskPurchased"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        style={{
+                          color: "#9CA8B4",
+                        }}
+                        control={
+                          <Checkbox
+                            {...field}
+                            id="task-purchased"
+                            style={{
+                              display: "flex",
+                              justifyContent: "left",
+                              color: "#9CA8B4",
+                            }}
+                            inputProps={{ "aria-label": "controlled" }}
+                            checked={field.value}
+                          />
+                        }
+                        label={"Purchased"}
+                      />
+                    )}
+                  />
+                )}
               </div>
             </Box>
             <Box sx={footerStyle}>
@@ -227,7 +278,7 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
                   style={{ textTransform: "none", color: "#2A323C" }}
                   onClick={() => {
                     reset();
-                    handleClose();
+                    toggleShowPopup(null);
                   }}
                 >
                   Cancel
@@ -237,7 +288,7 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
                   variant="contained"
                   style={{ textTransform: "none" }}
                 >
-                  Add task
+                  {task ? `Save Item` : `Add task`}
                 </Button>
               </div>
             </Box>

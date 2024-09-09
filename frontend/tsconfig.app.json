@@ -23,7 +23,8 @@
     "paths": {
       "@reducers/*": ["src/redux/reducers/*"],
       "@sagas/*": ["src/redux/sagas/*"],
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"]
     }
     // "typeRoots": ["./node_modules/@types"]
   },

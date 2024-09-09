@@ -1,13 +1,13 @@
 import React from "react";
 import Header from "@components/layout/Header";
 import Layout from "./layout/Layout";
-import TasksList from "./tasks/TasksList";
+import TasksContainer from "./tasks/TasksContainer";
 
 const App: React.FC = () => {
   return (
     <Layout>
       <Header />
-      <TasksList />
+      <TasksContainer />
     </Layout>
   );
 };

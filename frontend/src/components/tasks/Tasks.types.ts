@@ -1,12 +1,14 @@
 export interface TasksProps {
-  onClick: () => void;
+  tasks?: Task[];
+  toggleShowPopup: (task: Task | null) => void;
 }
 
 export interface Task {
-  id: number;
+  id?: number;
   name: string;
-  description?: string;
-  quantity?: number;
+  description: string;
+  quantity: number;
+  purchased: boolean;
   deleted: boolean;
 }
 
@@ -15,6 +17,7 @@ export interface TaskEdit {
   name?: string;
   description?: string;
   quantity?: number;
+  purchased: boolean;
 }
 
 export interface TasksState {
@@ -25,14 +28,15 @@ export interface TasksState {
 
 export interface TaskEditorProps {
   openModal: boolean;
-  handleClose: () => void;
-  task?: Task;
+  toggleShowPopup: (task: Task | null) => void;
+  task: Task | null;
 }
 
 export interface TaskFormInputs {
   taskName: string;
   taskDescription: string;
-  taskQuantity: number | null;
+  taskQuantity: number;
+  taskPurchased: boolean;
 }
 
 export interface TaskQuantityOption {
