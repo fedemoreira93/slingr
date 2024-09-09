@@ -47,7 +47,7 @@ const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 40px 0px 10px 0px;
+  padding-top: 40px;
 `;
 
 const TaskList: React.FC<TasksProps> = ({ tasks, toggleShowPopup }) => {
@@ -102,6 +102,7 @@ const TaskList: React.FC<TasksProps> = ({ tasks, toggleShowPopup }) => {
             background: isSelected(task.id)
               ? "rgba(213, 223, 233, 0.17)"
               : "unset",
+            marginTop: "10px",
           }}
         >
           <div style={{ display: "flex", padding: "20px 10px" }}>
