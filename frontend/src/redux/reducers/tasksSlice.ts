@@ -1,4 +1,4 @@
-import { Task, TaskEdit, TasksState } from "@components/tasks/Tasks.types";
+import { Task, TasksState } from "@components/tasks/Tasks.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: TasksState = {
@@ -31,10 +31,15 @@ const tasksSlice = createSlice({
     removeTask: (state, action: PayloadAction<number>) => {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
-    editTask: (state, action: PayloadAction<TaskEdit>) => {
-      const task = state.tasks.find((task) => task.id === action.payload.id);
-      if (task) {
-        Object.assign(task, action.payload);
+    editTask: (state, action: PayloadAction<Task>) => {
+      const updatedTask = action.payload;
+
+      const taskIndex = state.tasks.findIndex(
+        (task) => task.id === updatedTask.id
+      );
+
+      if (taskIndex !== -1) {
+        state.tasks[taskIndex] = updatedTask;
       }
     },
   },

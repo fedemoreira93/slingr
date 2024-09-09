@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "src/redux/store";
 import TasksList from "./TasksList";
-import TaskEditor from "./TaskEditor";
+import TaskEditor from "./TaskEditor/TaskEditor";
 import { Task } from "./Tasks.types";
 import useNotifications from "@hooks/useNotifications";
 import { FETCH_TASKS_REQUEST } from "@actionTypes/tasksTypes";
@@ -79,7 +79,7 @@ const TasksContainer: React.FC = () => {
       )}
       <StyledTasksContainer>
         {!loading && !tasks.length ? (
-          <EmptyTasks toggleShowPopup={toggleShowPopup} />
+          <EmptyTasks toggleShowPopup={toggleShowPopup} tasks={[]} />
         ) : (
           !loading && (
             <TasksList tasks={tasks} toggleShowPopup={toggleShowPopup} />

@@ -45,8 +45,10 @@ const fetchTasksAPI = (): Promise<Task[]> => {
 
 const addTaskAPI = (task: Task): Promise<Task> => {
   return new Promise((resolve) => {
-    setTimeout(resolve, 500);
-    task.id = 3;
+    setTimeout(() => {
+      task.id = 3;
+      resolve(task);
+    }, 500);
   });
 };
 
@@ -54,14 +56,24 @@ const removeTaskAPI = (id: number): Promise<void> => {
   console.log(id);
 
   return new Promise((resolve) => {
-    setTimeout(resolve, 500);
+    setTimeout(() => {
+      resolve();
+    }, 500);
   });
 };
 
 const editTaskAPI = (task: TaskEdit): Promise<Task> => {
-  console.log(task);
   return new Promise((resolve) => {
-    setTimeout(resolve, 500);
+    setTimeout(() => {
+      const editedTask: Task = {
+        id: 3,
+        name: task.name || "no-fetch-name",
+        description: task.name || "no-fetch-description",
+        quantity: task.quantity || 0,
+        purchased: task.purchased || false,
+      };
+      resolve(editedTask);
+    }, 500);
   });
 };
 
@@ -109,9 +121,9 @@ function* editTaskSaga(action: PayloadAction<TaskEdit>) {
   try {
     yield put(startLoading());
 
-    yield call(editTaskAPI, action.payload);
+    const task: Task = yield call(editTaskAPI, action.payload);
 
-    yield put(editTask(action.payload));
+    yield put(editTask(task));
     yield put(stopLoading());
   } catch (error) {
     yield put(fetchTaskError(handleError(error)));

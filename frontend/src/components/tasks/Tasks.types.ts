@@ -1,10 +1,10 @@
 export interface TasksProps {
-  tasks?: Task[];
+  tasks: Task[];
   toggleShowPopup: (task: Task | null) => void;
 }
 
 export interface Task {
-  id: number | undefined;
+  id: number;
   name: string;
   description: string;
   quantity: number;
