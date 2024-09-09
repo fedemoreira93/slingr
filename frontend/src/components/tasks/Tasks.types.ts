@@ -9,7 +9,6 @@ export interface Task {
   description: string;
   quantity: number;
   purchased: boolean;
-  deleted: boolean;
 }
 
 export interface TaskEdit {

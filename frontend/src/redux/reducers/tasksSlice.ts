@@ -29,10 +29,7 @@ const tasksSlice = createSlice({
       state.tasks.push(action.payload);
     },
     removeTask: (state, action: PayloadAction<number>) => {
-      const task = state.tasks.find((task) => task.id === action.payload);
-      if (task) {
-        task.deleted = true;
-      }
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
     editTask: (state, action: PayloadAction<TaskEdit>) => {
       const task = state.tasks.find((task) => task.id === action.payload.id);

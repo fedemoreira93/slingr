@@ -81,10 +81,7 @@ const TasksContainer: React.FC = () => {
           <EmptyTasks toggleShowPopup={toggleShowPopup} />
         ) : (
           !loading && (
-            <TasksList
-              tasks={tasks.filter((t) => !t.deleted)}
-              toggleShowPopup={toggleShowPopup}
-            />
+            <TasksList tasks={tasks} toggleShowPopup={toggleShowPopup} />
           )
         )}
       </StyledTasksContainer>

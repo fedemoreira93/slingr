@@ -108,7 +108,6 @@ const TaskEditor: React.FC<TaskEditorProps> = ({
       description: data.taskDescription,
       quantity: data.taskQuantity,
       purchased: data.taskPurchased,
-      deleted: false,
     };
     dispatch({
       type: task?.id ? "EDIT_TASK_REQUEST" : "ADD_TASK_REQUEST",
